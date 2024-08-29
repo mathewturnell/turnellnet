@@ -2,9 +2,10 @@ from fcnetwork import FCNetwork
 from fclayer import FCLayer
 from activationlayer import ActivationLayer
 from activation_functions import act_tanh, df_act_tanh
-import tensorflow
-from keras.datasets import mnist
-from keras.utils import np_utils
+
+from tensorflow import keras
+from keras._tf_keras.keras.datasets import mnist
+from keras._tf_keras.keras import utils as np_utils
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -31,13 +32,13 @@ y_test = np_utils.to_categorical(y_test)
 net = FCNetwork()
 
 net.add(FCLayer(28*28, 100))  # input_shape=(1, 28*28)    ;   output_shape=(1, 100)
-net.add(ActivationLayer(act_tanh, df_act_tanh))
+net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
 net.add(FCLayer(100, 50))                   # input_shape=(1, 100)      ;   output_shape=(1, 50)
-net.add(ActivationLayer(act_tanh, df_act_tanh))
+net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
 net.add(FCLayer(50, 10))                    # input_shape=(1, 50)       ;   output_shape=(1, 10)
-net.add(ActivationLayer(act_tanh, df_act_tanh))
+net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
 
-net.train(x_train[0:1000], y_train[0:1000], iterations =1, learning_rate=0.1)
+net.train(x_train[0:1000], y_train[0:5000], iterations =10, learning_rate=0.1)
 
 numberOfSamples = 10
 
@@ -57,27 +58,27 @@ for i in range(numberOfSamples):
     axs[i].axes.get_xaxis().set_visible(False)
     axs[i].axes.get_yaxis().set_visible(False)
 
-fig1, axs1 = plt.subplots(10,10)
+# fig1, axs1 = plt.subplots(10,10)
 
-w = net.input_layer.w.reshape(28,28,100)
+# w = net.input_layer.w.reshape(28,28,100)
 
-x = np.linspace(0, 27, 28)
-y = np.linspace(0, 27, 28)
-X, Y = np.meshgrid(x, y)
+# x = np.linspace(0, 27, 28)
+# y = np.linspace(0, 27, 28)
+# X, Y = np.meshgrid(x, y)
 
-for i in range(10):
-    for j in range(10):
-        c = axs1[i,j].pcolor(X, Y, w[:,:,i+j])
-        axs1[i,j].axes.get_xaxis().set_visible(False)
-        axs1[i,j].axes.get_yaxis().set_visible(False)
+# for i in range(10):
+#     for j in range(10):
+#         c = axs1[i,j].pcolor(X, Y, w[:,:,i+j])
+#         axs1[i,j].axes.get_xaxis().set_visible(False)
+#         axs1[i,j].axes.get_yaxis().set_visible(False)
 
-fig1.colorbar(c, ax=axs1)
+# fig1.colorbar(c, ax=axs1)
 
-predictions = np.reshape(np.asarray(net.predictions), (np.size(net.predictions)))
-J = np.reshape(net.J,(np.size(net.J)))
+# predictions = np.reshape(np.asarray(net.predictions), (np.size(net.predictions)))
+# J = np.reshape(net.J,(np.size(net.J)))
 
-plt.figure(3)
-plt.plot(range(len(J)), J)
+# plt.figure(3)
+# plt.plot(range(len(J)), J)
 
 plt.show()
 
