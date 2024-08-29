@@ -15,8 +15,8 @@ class ActivationLayer(Layer):
         self.x = input_data
 
         if(self.output_reshape == True):
-            self.y = np.reshape(self.f_output(self.x), np.size(self.x))
-            self.df = np.reshape(self.df_output(self.x),np.size(self.x))
+            self.y = np.reshape(self.f_output(self.x), (1, np.size(self.x)))
+            self.df = np.reshape(self.df_output(self.x),(1, np.size(self.x)))
         else:
             self.y = self.f_output(self.x)
             self.df = self.df_output(self.x)

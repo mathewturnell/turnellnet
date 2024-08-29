@@ -74,7 +74,7 @@ class FCNetwork:
                 for layer in self.layers:
                     output = layer.forward_propagation(output,diag)
                     
-                    index = layer.printState()
+                    # index = layer.printState()
                     # if index == 1:
                     #     print('Real Value: %d, Predicted Value: %d'%(np.argmax(outputs_train[i+1]), np.argmax(output)))
                         

@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 
 #Choice of NN
 
-netType = 0
+netType = 1
 
 #Input Parameters
 
@@ -62,7 +62,7 @@ if(netType == 0):
     net.add(ActivationLayer(act_tanh, df_act_tanh, 1))
     net.add(FCLayer(2700, 100, 0.1))
 else:
-    net.add(CNNLayer(inputSize_x, inputSize_y, inputDepth, kernelSize_x, kernelSize_y, numberOfKernels, 0.01))
+    net.add(CNNLayer(inputSize_x, inputSize_y, inputDepth, kernelSize_x, kernelSize_y, numberOfKernels, 0.1))
     net.add(ActivationLayer(act_tanh, df_act_tanh, True))
     net.add(FCLayer((inputSize_x + kernelSize_x - 1) * (inputSize_y + kernelSize_y - 1)*numberOfKernels, 100, 0.1))
 
