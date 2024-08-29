@@ -1,5 +1,6 @@
 from fcnetwork import FCNetwork
 from fclayer import FCLayer
+from cnnlayer import CNNLayer
 from activationlayer import ActivationLayer
 from activation_functions import act_tanh, df_act_tanh
 
@@ -10,12 +11,34 @@ from keras._tf_keras.keras import utils as np_utils
 import numpy as np
 from matplotlib import pyplot as plt
 
+#Choice of NN
+
+netType = 0
+
+#Input Parameters
+
+inputDepth = 1
+
+inputSize_x = 28
+inputSize_y = 28
+
+#hyper parameters CNN
+
+numberOfKernels = 3
+
+kernelSize_x = 3
+kernelSize_y = 3
+
 # load MNIST from server
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 # training data : 60000 samples
 # reshape and normalize input data
-x_train = x_train.reshape(x_train.shape[0], 1, 28*28)
+if(netType == 0):
+    x_train = x_train.reshape(x_train.shape[0], 1, 28*28)
+else:
+    x_train = np.expand_dims(x_train, axis = 3)
+
 x_train = x_train.astype('float32')
 x_train /= 255
 # encode output which is a number in range [0,9] into a vector of size 10
@@ -23,26 +46,37 @@ x_train /= 255
 y_train = np_utils.to_categorical(y_train)
 
 # same for test data : 10000 samples
-x_test = x_test.reshape(x_test.shape[0], 1, 28*28)
+if(netType == 0):
+    x_test = x_test.reshape(x_test.shape[0], 1, 28*28)
+else:
+    x_test = np.expand_dims(x_test, axis = 3)
+
 x_test = x_test.astype('float32')
 x_test /= 255
 y_test = np_utils.to_categorical(y_test)
 
 
 net = FCNetwork()
+if(netType == 0):
+    net.add(FCLayer(28*28, 2700, 0.1))
+    net.add(ActivationLayer(act_tanh, df_act_tanh, 1))
+    net.add(FCLayer(2700, 100, 0.1))
+else:
+    net.add(CNNLayer(inputSize_x, inputSize_y, inputDepth, kernelSize_x, kernelSize_y, numberOfKernels, 0.01))
+    net.add(ActivationLayer(act_tanh, df_act_tanh, True))
+    net.add(FCLayer((inputSize_x + kernelSize_x - 1) * (inputSize_y + kernelSize_y - 1)*numberOfKernels, 100, 0.1))
 
-net.add(FCLayer(28*28, 100))  # input_shape=(1, 28*28)    ;   output_shape=(1, 100)
 net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
-net.add(FCLayer(100, 50))                   # input_shape=(1, 100)      ;   output_shape=(1, 50)
+net.add(FCLayer(100, 50, 0.1))
 net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
-net.add(FCLayer(50, 10))                    # input_shape=(1, 50)       ;   output_shape=(1, 10)
+net.add(FCLayer(50, 10, 0.1)) 
 net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
 
-net.train(x_train[0:1000], y_train[0:5000], iterations =10, learning_rate=0.1)
+net.train(x_train[0:5000], y_train[0:5000], iterations =10, diag=1)
 
 numberOfSamples = 10
 
-out = net.predict(x_test[0:numberOfSamples])
+out = net.predict(x_test[0:numberOfSamples], diag=1)
 
 
 

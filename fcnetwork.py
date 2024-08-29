@@ -26,7 +26,7 @@ class FCNetwork:
         else:
             self.input_layer = self.layers[len(self.layers) - 2]
 
-    def predict(self, input_data):
+    def predict(self, input_data, diag):
 
         samples = len(input_data)
         result = []
@@ -39,7 +39,7 @@ class FCNetwork:
             z = 0
 
             for layer in self.layers:
-                output = layer.forward_propagation(output)
+                output = layer.forward_propagation(output, diag)
 
                 # if z == 0:
                 #     os.system('cls' if os.name == 'nt' else 'clear')
@@ -61,7 +61,7 @@ class FCNetwork:
 
         return result
 
-    def train(self, inputs_train, outputs_train, iterations, learning_rate):
+    def train(self, inputs_train, outputs_train, iterations, diag):
 
         samples = len(inputs_train)
 
@@ -69,20 +69,26 @@ class FCNetwork:
             for i in range(samples):
                 output = inputs_train[i].copy()
 
-                for layer in self.layers:
-                    output = layer.forward_propagation(output)
+                print('Real Value: %d'%(np.argmax(outputs_train[i])))
 
-                # os.system('cls' if os.name == 'nt' else 'clear')
-                print('Real Value: %d, Predicted Value: %d'%(np.argmax(outputs_train[i]), np.argmax(output)))
+                for layer in self.layers:
+                    output = layer.forward_propagation(output,diag)
+                    
+                    index = layer.printState()
+                    # if index == 1:
+                    #     print('Real Value: %d, Predicted Value: %d'%(np.argmax(outputs_train[i+1]), np.argmax(output)))
+                        
 
                 error = er.error(outputs_train[i], output)
                 d_error = er.d_error(error)
 
                 delta_1 = d_error
                 for layer in reversed(self.layers):
-                    delta_1 = layer.backward_propagation(delta_1, learning_rate)
+                    delta_1 = layer.backward_propagation(delta_1, diag)
 
                 J_mse = er.J(error)
+
+                print('Predicted Value: %d'%(np.argmax(output)))
 
                 #print('prediction %f, output %d' % (output, outputs_train[i]))
                 # os.system('cls' if os.name == 'nt' else 'clear')

@@ -10,7 +10,7 @@ class ActivationLayer(Layer):
         self.df_output = d_f
         self.output_reshape = output_reshape
 
-    def forward_propagation(self, input_data):
+    def forward_propagation(self, input_data, diag):
 
         self.x = input_data
 
@@ -23,7 +23,7 @@ class ActivationLayer(Layer):
 
         return self.y
 
-    def backward_propagation(self, output_error, learning_rate):
+    def backward_propagation(self, output_error, diag):
 
         #if(np.ndim(output_error)>1):
         #    output_error = output_error[0:np.shape(self.df)[0],0:np.shape(self.df)[1]]
@@ -35,6 +35,10 @@ class ActivationLayer(Layer):
             self.delta_1 = d_1
 
         return self.delta_1
+    
+    def printState(self):
+
+        return 0
 
 
 

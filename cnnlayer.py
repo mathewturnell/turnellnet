@@ -7,7 +7,9 @@ from matplotlib import pyplot as plt
 
 class CNNLayer(Layer):
 
-    def __init__(self, input_size_x, input_size_y,  input_depth, kernel_size_x, kernel_size_y, kernel_count):
+    def __init__(self, input_size_x, input_size_y,  input_depth, kernel_size_x, kernel_size_y, kernel_count, learningRate):
+
+        self.learningRate = learningRate
 
         self.input_size_x = input_size_x
         self.input_size_y = input_size_y
@@ -23,9 +25,9 @@ class CNNLayer(Layer):
         self.x = np.zeros((input_size_x, input_size_y, self.input_depth))
         self.x_plus = np.pad(self.x, self.kernel_size_x-1, mode='constant')
 
-        self.w = np.random.rand(kernel_size_x, kernel_size_y, input_depth, self.kernel_count)
+        self.w = np.random.rand(kernel_size_x, kernel_size_y, input_depth, self.kernel_count)-0.5
         self.dw = np.zeros((kernel_size_x, kernel_size_y, input_depth, self.kernel_count))
-        self.b = np.random.rand(self.sizeOutput_x, self.sizeOutput_y, self.kernel_count)
+        self.b = np.random.rand(self.sizeOutput_x, self.sizeOutput_y, self.kernel_count)-0.5
         self.db = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
         self.y = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
 
@@ -36,7 +38,7 @@ class CNNLayer(Layer):
 
         self.fig, self.axs = plt.subplots(1,6)
 
-    def forward_propagation(self, input_data):
+    def forward_propagation(self, input_data, diag):
 
         self.x = np.copy(input_data)
         self.x_plus = np.pad(self.x, self.kernel_size_x-1, mode='constant')
@@ -51,15 +53,18 @@ class CNNLayer(Layer):
         for k in range(self.kernel_count):
             self.a[:,:,k] = self.b[:,:,k]
             for d in range(self.input_depth):
-                self.a[:, :, k] += sp.signal.convolve2d(np.squeeze(self.x_plus[:,:,d]), np.squeeze(self.w[:,:,d,k]), mode='valid')
+                self.a[:, :, k] += sp.signal.correlate2d(self.x_plus[:,:,d], self.w[:,:,d,k], mode='valid')
 
         self.y = self.a
 
-        self.printState()
+        # if diag == 1:
+        #     self.printState()
+
+        # self.y = (self.y-np.min(self.y))/(np.max(self.y)-np.min(self.y))
 
         return self.y
 
-    def backward_propagation(self, output_error, learning_rate):
+    def backward_propagation(self, output_error, diag):
 
         self.delta = np.copy(output_error)
         self.delta_1 = np.zeros((self.input_size_x, self.input_size_y, self.input_depth))
@@ -75,18 +80,18 @@ class CNNLayer(Layer):
 
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
-                self.dw[:, :, d, k] = sp.signal.convolve2d(np.squeeze(self.x_plus[:,:,d]), np.squeeze(self.delta[:,:,k]), mode='valid')
+                self.dw[:, :, d, k] = sp.signal.correlate2d(np.squeeze(self.x_plus[:,:,d]), np.squeeze(self.delta[:,:,k]), mode='valid')
                 
         self.db = self.delta
 
         #for k in range(self.kernel_count):
         #    self.db[:,:,k] = self.delta[:,:,k]
 
-        self.w = self.w - learning_rate*self.dw
-        self.b = self.b - learning_rate*self.db
+        self.w = self.w - self.learningRate*self.dw
+        self.b = self.b - self.learningRate*self.db
 
-        # self.printState()
-
+        # if diag == 1:
+        #     self.printState()
 
 
         return self.delta_1
@@ -115,6 +120,8 @@ class CNNLayer(Layer):
         # self.axs[0].legend()
 
         plt.show()
+
+        return 1
         
 
 
