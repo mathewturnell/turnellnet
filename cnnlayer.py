@@ -38,6 +38,12 @@ class CNNLayer(Layer):
 
         self.fig, self.axs = plt.subplots(1,6)
 
+        self.numberLinesOutput = self.input_depth * self.kernel_count
+        self.fig1, self.axs1 = plt.subplots(self.numberLinesOutput,3)
+
+        self.fig.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
+        self.fig1.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
+
     def forward_propagation(self, input_data, diag):
 
         self.x = np.copy(input_data)
@@ -96,9 +102,9 @@ class CNNLayer(Layer):
 
         return self.delta_1
     
-    def printState(self):
+    def printStateDiag(self):
 
-        
+            
         d = 0
         k = 0
 
@@ -121,7 +127,23 @@ class CNNLayer(Layer):
 
         plt.show()
 
-        return 1
+    def printState(self):
+
+
+        for d in range(self.input_depth):
+            for k in range(self.kernel_count):
+
+                self.axs1[d+k,0].imshow(np.squeeze(self.x_plus[:,:,d]), interpolation='nearest')
+                self.axs1[d+k,1].imshow(np.squeeze(self.w[:, :, d, k]), interpolation='nearest')
+                self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
+
+                self.axs1[d+k,0].title.set_text('x_plus[d=%d]'%(d))
+                self.axs1[d+k,1].title.set_text('W[d=%d,k=%d]'%(d,k))
+                self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
+        
+
+        # self.axs[0].legend()
+
         
 
 

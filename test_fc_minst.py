@@ -11,6 +11,9 @@ from keras._tf_keras.keras import utils as np_utils
 import numpy as np
 from matplotlib import pyplot as plt
 
+################################################################################################################
+
+
 #Choice of NN
 
 netType = 1
@@ -32,7 +35,6 @@ kernelSize_y = 3
 # load MNIST from server
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-# training data : 60000 samples
 # reshape and normalize input data
 if(netType == 0):
     x_train = x_train.reshape(x_train.shape[0], 1, 28*28)
@@ -41,11 +43,9 @@ else:
 
 x_train = x_train.astype('float32')
 x_train /= 255
-# encode output which is a number in range [0,9] into a vector of size 10
-# e.g. number 3 will become [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
 y_train = np_utils.to_categorical(y_train)
 
-# same for test data : 10000 samples
+
 if(netType == 0):
     x_test = x_test.reshape(x_test.shape[0], 1, 28*28)
 else:
@@ -55,8 +55,10 @@ x_test = x_test.astype('float32')
 x_test /= 255
 y_test = np_utils.to_categorical(y_test)
 
+################################################################################################################
 
 net = FCNetwork()
+
 if(netType == 0):
     net.add(FCLayer(28*28, 2700, 0.1))
     net.add(ActivationLayer(act_tanh, df_act_tanh, 1))
@@ -72,16 +74,11 @@ net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
 net.add(FCLayer(50, 10, 0.1)) 
 net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
 
-net.train(x_train[0:5000], y_train[0:5000], iterations =10, diag=1)
+net.train(x_train[0:10], y_train[0:10], iterations =10, diag=1)
 
 numberOfSamples = 10
-
 out = net.predict(x_test[0:numberOfSamples], diag=1)
-
-
-
 images = np.reshape(x_test[0:numberOfSamples],(numberOfSamples,28,28))
-
 
 fig, axs = plt.subplots(1,numberOfSamples)
 
@@ -92,7 +89,12 @@ for i in range(numberOfSamples):
     axs[i].axes.get_xaxis().set_visible(False)
     axs[i].axes.get_yaxis().set_visible(False)
 
-# fig1, axs1 = plt.subplots(10,10)
+for layer in net.layers:
+    layer.printState()
+
+plt.show()
+
+pass
 
 # w = net.input_layer.w.reshape(28,28,100)
 
@@ -108,13 +110,11 @@ for i in range(numberOfSamples):
 
 # fig1.colorbar(c, ax=axs1)
 
-# predictions = np.reshape(np.asarray(net.predictions), (np.size(net.predictions)))
-# J = np.reshape(net.J,(np.size(net.J)))
+predictions = np.reshape(np.asarray(net.predictions), (np.size(net.predictions)))
+J = np.reshape(net.J,(np.size(net.J)))
 
 # plt.figure(3)
 # plt.plot(range(len(J)), J)
-
-plt.show()
 
 #print("\n")
 #print("predicted values : ")
