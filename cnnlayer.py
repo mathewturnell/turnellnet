@@ -9,6 +9,10 @@ class CNNLayer(Layer):
 
     def __init__(self, input_size_x, input_size_y,  input_depth, kernel_size_x, kernel_size_y, kernel_count, learningRate):
 
+        diag = 0
+
+        self.type = "CNN"
+
         self.learningRate = learningRate
 
         self.input_size_x = input_size_x
@@ -36,12 +40,14 @@ class CNNLayer(Layer):
         self.a = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
         self.df = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
 
-        self.fig, self.axs = plt.subplots(1,6)
+        if diag == 1:
+            self.fig, self.axs = plt.subplots(1,6)
+            self.fig.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
 
         self.numberLinesOutput = self.input_depth * self.kernel_count
         self.fig1, self.axs1 = plt.subplots(self.numberLinesOutput,3)
 
-        self.fig.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
+        
         self.fig1.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
 
     def forward_propagation(self, input_data, diag):
@@ -132,6 +138,13 @@ class CNNLayer(Layer):
 
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
+
+                self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
+                self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
+                self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
+                self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
+                self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
+                self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
 
                 self.axs1[d+k,0].imshow(np.squeeze(self.x_plus[:,:,d]), interpolation='nearest')
                 self.axs1[d+k,1].imshow(np.squeeze(self.w[:, :, d, k]), interpolation='nearest')

@@ -27,10 +27,17 @@ inputSize_y = 28
 
 #hyper parameters CNN
 
-numberOfKernels = 3
+numberOfKernels = 10
 
-kernelSize_x = 3
-kernelSize_y = 3
+kernelSize_x = 2
+kernelSize_y = 2
+
+trainingSamples = 5000
+trainingIterations = 2
+
+trainingRateCNN = 0.1
+trainingRateFC = 0.1
+
 
 # load MNIST from server
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -64,17 +71,17 @@ if(netType == 0):
     net.add(ActivationLayer(act_tanh, df_act_tanh, 1))
     net.add(FCLayer(2700, 100, 0.1))
 else:
-    net.add(CNNLayer(inputSize_x, inputSize_y, inputDepth, kernelSize_x, kernelSize_y, numberOfKernels, 0.1))
-    net.add(ActivationLayer(act_tanh, df_act_tanh, True))
-    net.add(FCLayer((inputSize_x + kernelSize_x - 1) * (inputSize_y + kernelSize_y - 1)*numberOfKernels, 100, 0.1))
+    net.add(CNNLayer(inputSize_x, inputSize_y, inputDepth, kernelSize_x, kernelSize_y, numberOfKernels, trainingRateCNN))
+    net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", True))
+    net.add(FCLayer((inputSize_x + kernelSize_x - 1) * (inputSize_y + kernelSize_y - 1)*numberOfKernels, 100, trainingRateFC))
 
-net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
+net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", 0))
 net.add(FCLayer(100, 50, 0.1))
-net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
+net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", 0))
 net.add(FCLayer(50, 10, 0.1)) 
-net.add(ActivationLayer(act_tanh, df_act_tanh, 0))
+net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", 0))
 
-net.train(x_train[0:10], y_train[0:10], iterations =10, diag=1)
+net.train(x_train[0:trainingSamples], y_train[0:trainingSamples], iterations =trainingIterations, trainingSamples=trainingSamples ,diag=1)
 
 numberOfSamples = 10
 out = net.predict(x_test[0:numberOfSamples], diag=1)
@@ -89,36 +96,12 @@ for i in range(numberOfSamples):
     axs[i].axes.get_xaxis().set_visible(False)
     axs[i].axes.get_yaxis().set_visible(False)
 
-for layer in net.layers:
-    layer.printState()
+net.printStateLayers()
+net.printEnergy()
 
 plt.show()
 
 pass
 
-# w = net.input_layer.w.reshape(28,28,100)
 
-# x = np.linspace(0, 27, 28)
-# y = np.linspace(0, 27, 28)
-# X, Y = np.meshgrid(x, y)
-
-# for i in range(10):
-#     for j in range(10):
-#         c = axs1[i,j].pcolor(X, Y, w[:,:,i+j])
-#         axs1[i,j].axes.get_xaxis().set_visible(False)
-#         axs1[i,j].axes.get_yaxis().set_visible(False)
-
-# fig1.colorbar(c, ax=axs1)
-
-predictions = np.reshape(np.asarray(net.predictions), (np.size(net.predictions)))
-J = np.reshape(net.J,(np.size(net.J)))
-
-# plt.figure(3)
-# plt.plot(range(len(J)), J)
-
-#print("\n")
-#print("predicted values : ")
-#print(out, end="\n")
-#print("true values : ")
-#print(y_test[0:numberOfSamples])
 

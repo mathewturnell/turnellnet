@@ -7,10 +7,19 @@ class FCLayer(Layer):
 
     def __init__(self, input_size, output_size, learningRate):
 
+        self.type = "FC"
+
         self.learningRate = learningRate
 
         self.x = np.zeros((1, input_size))
         self.y = np.zeros((1, output_size))
+
+        self.input_size_x = input_size
+        self.input_size_y = 1
+        self.input_depth = 1
+        self.kernel_count = 1
+        self.sizeOutput_x = 1
+        self.sizeOutput_y = output_size
 
         self.delta = np.zeros((1, output_size))
         self.delta_1 = np.zeros((1, input_size))

@@ -61,15 +61,13 @@ class FCNetwork:
 
         return result
 
-    def train(self, inputs_train, outputs_train, iterations, diag):
+    def train(self, inputs_train, outputs_train, iterations, trainingSamples, diag):
 
         samples = len(inputs_train)
 
         for k in range(iterations):
             for i in range(samples):
                 output = inputs_train[i].copy()
-
-                print('Real Value: %d'%(np.argmax(outputs_train[i])))
 
                 for layer in self.layers:
                     output = layer.forward_propagation(output,diag)
@@ -88,7 +86,7 @@ class FCNetwork:
 
                 J_mse = er.J(error)
 
-                print('Predicted Value: %d'%(np.argmax(output)))
+                self.printStateLearning(output, J_mse, k, i, np.argmax(outputs_train[i]) ,iterations, trainingSamples)
 
                 #print('prediction %f, output %d' % (output, outputs_train[i]))
                 # os.system('cls' if os.name == 'nt' else 'clear')
@@ -100,5 +98,62 @@ class FCNetwork:
 
                 self.predictions.append(output)
                 self.J.append(J_mse)
+        
+    def printStateLearning(self, output, error, iteration, sample, sampleTrueValue, iterations, trainingSamples):
+
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        a = "  _____                      _ _ _   _      _            ___  " + \
+            "\n |_   _|   _ _ __ _ __   ___| | | \\ | | ___| |_  __   __/ _ \\ " + \
+            "\n   | || | | | '__| '_ \\ / _ \\ | |  \\| |/ _ \\ __| \\ \\ / / | | |" + \
+            "\n   | || |_| | |  | | | |  __/ | | |\\  |  __/ |_   \\ V /| |_| |" + \
+            "\n   |_| \\__,_|_|  |_| |_|\\___|_|_|_| \\_|\\___|\\__|   \\_/  \\___/"
+        
+        
+
+        print(a)
+        print('\n')
+
+        print('Training NeuralNet, %d layers'%(np.size(self.layers)))
+        print(self.printStructure())
+        
+        percentage = (iteration*trainingSamples+sample)*100/(trainingSamples*iterations)
+
+        print('Sample: %d/%d, Iteration %d/%d'%(sample+1, trainingSamples, iteration+1, iterations))
+        print('%d%% Complete'%(percentage))
+        print(self.printPercentageBar(percentage))
+        print('Real/Predicted Value: %d/%d'%(sampleTrueValue , np.argmax(output)))
+        print('Error Energy: %.2f'%(error))
+
+    def printStateLayers(self):
+        for layer in self.layers:
+            layer.printState()
+    
+    def printPercentageBar(self, percentage):
+
+        s = ""
+        digits = (int)(percentage / 10)
+        for i in range(digits):
+            s = s + "*"
+        for i in range(digits, 10):
+            s = s + "."
+        
+        return s
+    
+    def printStructure(self):
+
+        s = "\n"
+        for layer in self.layers:
+            s = s + layer.type + (" (%dx%dx%d)->(%dx%dx%d)")%(layer.input_size_x,layer.input_size_y, layer.input_depth, layer.sizeOutput_x,layer.sizeOutput_y, layer.kernel_count) + "\n"
+        
+        return s
+
+    def printEnergy(self):
+
+        predictions = np.reshape(np.asarray(self.predictions), (np.size(self.predictions)))
+        J = np.reshape(self.J,(np.size(self.J)))
+
+        plt.figure()
+        plt.plot(range(len(J)), J)
 
 
