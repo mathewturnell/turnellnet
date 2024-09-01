@@ -4,12 +4,13 @@ from layer import Layer
 
 class ActivationLayer(Layer):
 
-    def __init__(self, f, d_f, type, output_reshape):
+    def __init__(self, f, d_f, N, type, output_reshape):
 
         self.type = type
 
         self.f_output = f
         self.df_output = d_f
+        self.N = N
         self.output_reshape = output_reshape
 
         self.input_size_x = 0
@@ -24,12 +25,12 @@ class ActivationLayer(Layer):
         self.x = input_data
 
         if(self.output_reshape == True):
-            self.y = np.reshape(self.f_output(self.x), (1, np.size(self.x)))
-            self.df = np.reshape(self.df_output(self.x),(1, np.size(self.x)))
+            self.y = np.reshape(self.f_output(self.x, self.N), (1, np.size(self.x)))
+            self.df = np.reshape(self.df_output(self.x, self.N),(1, np.size(self.x)))
 
         else:
-            self.y = self.f_output(self.x)
-            self.df = self.df_output(self.x)
+            self.y = self.f_output(self.x, self.N)
+            self.df = self.df_output(self.x, self.N)
 
         self.input_size_x = np.size(self.x, 0)
         self.input_size_y = np.size(self.x, 1)

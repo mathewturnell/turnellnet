@@ -1,6 +1,18 @@
 import numpy as np
 
-def act_tanh(x):
+def act_ds(x, N):
+
+    out = 1/N*x
+
+    return out
+
+def df_act_ds(x, N):
+
+    out = 1/N*np.ones(np.shape(x))
+
+    return out
+
+def act_tanh(x, N):
 
     out = x.copy()
 
@@ -20,7 +32,7 @@ def act_tanh(x):
     return out
 
 
-def df_act_tanh(x):
+def df_act_tanh(x, N):
 
     out = x.copy()
 
@@ -39,7 +51,7 @@ def df_act_tanh(x):
 
     return out
 
-def act_RELU(x):
+def act_RELU(x, N):
 
     out = x.copy()
 
@@ -67,7 +79,7 @@ def act_RELU(x):
 
     return out
 
-def df_act_RELU(x):
+def df_act_RELU(x, N):
 
     out = x.copy()
 
@@ -95,13 +107,13 @@ def df_act_RELU(x):
 
     return out
 
-def act_sigmoid(x):
+def act_sigmoid(x, N):
     return 1 / (1 + np.exp(-x))
 
 def df_act_sigmoid(x):
     s = act_sigmoid(x)
     return s * (1 - s)
 
-def act_softmax(x):
+def act_softmax(x, N):
     tmp = np.exp(x)
     return tmp / np.sum(tmp)
