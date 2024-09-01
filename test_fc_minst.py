@@ -28,9 +28,16 @@ inputSize_y = 28
 #hyper parameters CNN
 
 numberOfKernels = 10
+numberOfKernels1 = 10
+numberOfKernels2 = 10
 
-kernelSize_x = 2
-kernelSize_y = 2
+kernelSize_x = 5
+kernelSize_y = 5
+kernelSize1_x = 15
+kernelSize1_y = 15
+
+kernelSize2_x = 10
+kernelSize2_y = 10
 
 trainingSamples = 5000
 trainingIterations = 2
@@ -71,9 +78,18 @@ if(netType == 0):
     net.add(ActivationLayer(act_tanh, df_act_tanh, 1))
     net.add(FCLayer(2700, 100, 0.1))
 else:
-    net.add(CNNLayer(inputSize_x, inputSize_y, inputDepth, kernelSize_x, kernelSize_y, numberOfKernels, trainingRateCNN))
+
+    cnn0 = CNNLayer(inputSize_x, inputSize_y, inputDepth, kernelSize_x, kernelSize_y, numberOfKernels, trainingRateCNN)
+    cnn1 = CNNLayer(cnn0.sizeOutput_x, cnn0.sizeOutput_y, cnn0.kernel_count, kernelSize1_x, kernelSize1_y, numberOfKernels1, trainingRateCNN)
+    #cnn2 = CNNLayer(cnn1.sizeOutput_x, cnn1.sizeOutput_y, cnn1.kernel_count, kernelSize2_x, kernelSize2_y, numberOfKernels2, trainingRateCNN)
+
+    net.add(cnn0)
+    net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", False))
+    net.add(cnn1)
     net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", True))
-    net.add(FCLayer((inputSize_x + kernelSize_x - 1) * (inputSize_y + kernelSize_y - 1)*numberOfKernels, 100, trainingRateFC))
+    # net.add(cnn2)
+    # net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", True))
+    net.add(FCLayer(cnn1.sizeOutput_x * cnn1.sizeOutput_y *numberOfKernels1, 100, trainingRateFC))
 
 net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", 0))
 net.add(FCLayer(100, 50, 0.1))

@@ -45,10 +45,13 @@ class CNNLayer(Layer):
             self.fig.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
 
         self.numberLinesOutput = self.input_depth * self.kernel_count
+        if self.numberLinesOutput > 10:
+            self.numberLinesOutput = 10
+
         self.fig1, self.axs1 = plt.subplots(self.numberLinesOutput,3)
 
         
-        self.fig1.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
+        # self.fig1.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
 
     def forward_propagation(self, input_data, diag):
 
@@ -108,6 +111,9 @@ class CNNLayer(Layer):
 
         return self.delta_1
     
+    def getSizeOuputs(self):
+        return (self.sizeOutput_x, self.sizeOutput_y)
+    
     def printStateDiag(self):
 
             
@@ -138,6 +144,9 @@ class CNNLayer(Layer):
 
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
+
+                if d+k == 10:
+                    break
 
                 self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
                 self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
