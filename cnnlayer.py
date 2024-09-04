@@ -26,17 +26,17 @@ class CNNLayer(Layer):
         self.sizeOutput_x = input_size_x + kernel_size_x - 1
         self.sizeOutput_y = input_size_y + kernel_size_y - 1
 
-        self.x = np.zeros((input_size_x, input_size_y, self.input_depth))
+        self.x = np.zeros((self.input_size_x, self.input_size_y, self.input_depth))
         self.x_plus = np.pad(self.x, self.kernel_size_x-1, mode='constant')
 
-        self.w = np.random.rand(kernel_size_x, kernel_size_y, input_depth, self.kernel_count)-0.5
-        self.dw = np.zeros((kernel_size_x, kernel_size_y, input_depth, self.kernel_count))
+        self.w = np.random.rand(self.kernel_size_x, self.kernel_size_y, self.input_depth, self.kernel_count)-0.5
+        self.dw = np.zeros((self.kernel_size_x, self.kernel_size_y, self.input_depth, self.kernel_count))
         self.b = np.random.rand(self.sizeOutput_x, self.sizeOutput_y, self.kernel_count)-0.5
         self.db = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
         self.y = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
 
         self.delta = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
-        self.delta_1 = np.zeros((input_size_x, input_size_y, self.input_depth))
+        self.delta_1 = np.zeros((self.input_size_x, self.input_size_y, self.input_depth))
         self.a = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
         self.df = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
 
@@ -58,12 +58,8 @@ class CNNLayer(Layer):
         self.x = np.copy(input_data)
         self.x_plus = np.pad(self.x, self.kernel_size_x-1, mode='constant')
         self.x_plus = self.x_plus[:,:, self.kernel_size_x-1:self.input_depth+self.kernel_size_x-1]
-        # self.x_plus = np.copy(self.x[:,:,1])
-
 
         self.a = np.zeros((self.sizeOutput_x, self.sizeOutput_y, self.kernel_count))
-
-        temp = np.zeros(np.shape(self.a))
 
         for k in range(self.kernel_count):
             self.a[:,:,k] = self.b[:,:,k]
@@ -84,14 +80,10 @@ class CNNLayer(Layer):
         self.delta = np.copy(output_error)
         self.delta_1 = np.zeros((self.input_size_x, self.input_size_y, self.input_depth))
 
-        temp = np.zeros(np.shape(self.delta_1))
-
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
 
                 self.delta_1[:, :, d] += sp.signal.convolve2d(np.squeeze(self.delta[:,:,k]), np.squeeze(self.w[:,:,d,k]), mode='valid')
-
-        temp = np.zeros(np.shape(self.dw))
 
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
@@ -99,11 +91,8 @@ class CNNLayer(Layer):
                 
         self.db = self.delta
 
-        #for k in range(self.kernel_count):
-        #    self.db[:,:,k] = self.delta[:,:,k]
-
-        self.w = self.w - self.learningRate*self.dw
-        self.b = self.b - self.learningRate*self.db
+        self.w = self.w + self.learningRate*self.dw
+        self.b = self.b + self.learningRate*self.db
 
         # if diag == 1:
         #     self.printState()
@@ -141,31 +130,32 @@ class CNNLayer(Layer):
 
     def printState(self):
 
-
+        k = 0
 
 
         for d in range(self.input_depth):
-            for k in range(self.kernel_count):
 
-                if d+k == 10:
-                    break
+            if d+k == 10:
+                break
 
-                if (d == k):
+            self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
+            self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
+            self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
+            self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
+            self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
+            self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
 
-                    self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
-                    self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
-                    self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
-                    self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
-                    self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
-                    self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
+            self.axs1[d+k,0].imshow(np.squeeze(self.x_plus[:,:,d]), interpolation='nearest')
+            self.axs1[d+k,1].imshow(np.squeeze(self.w[:, :, d, k]), interpolation='nearest')
+            self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
 
-                    self.axs1[d+k,0].imshow(np.squeeze(self.x_plus[:,:,d]), interpolation='nearest')
-                    self.axs1[d+k,1].imshow(np.squeeze(self.w[:, :, d, k]), interpolation='nearest')
-                    self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
+            self.axs1[d+k,0].title.set_text('x_plus[d=%d]'%(d))
+            self.axs1[d+k,1].title.set_text('W[d=%d,k=%d]'%(d,k))
+            self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
 
-                    self.axs1[d+k,0].title.set_text('x_plus[d=%d]'%(d))
-                    self.axs1[d+k,1].title.set_text('W[d=%d,k=%d]'%(d,k))
-                    self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
+            k = k + 1
+            if k >= self.kernel_count:
+                k = 0
         
 
         # self.axs[0].legend()

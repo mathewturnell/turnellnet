@@ -29,7 +29,7 @@ class FCLayer(Layer):
         self.a = np.zeros((1, output_size))
         self.df = np.zeros((1, output_size))
 
-        self.fig, self.axs = plt.subplots(1,6)
+        # self.fig, self.axs = plt.subplots(1,6)
 
     def forward_propagation(self, input_data, diag):
 
@@ -56,20 +56,22 @@ class FCLayer(Layer):
     
     def printState(self):
 
-        self.axs[0].plot(range(np.size(self.w)), np.reshape(self.w, (np.size(self.w))))
-        self.axs[1].plot(range(np.size(self.dw)), np.reshape(self.dw, (np.size(self.dw))))
-        self.axs[2].plot(range(np.size(self.delta)), np.reshape(self.delta, (np.size(self.delta))))
-        self.axs[3].plot(range(np.size(self.delta_1)), np.reshape(self.delta_1, (np.size(self.delta_1))))
-        self.axs[4].plot(range(np.size(self.x)), np.reshape(self.x, (np.size(self.x))))
-        self.axs[5].plot(range(np.size(self.y)), np.reshape(self.y, (np.size(self.y))))
+        pass
+
+        # self.axs[0].plot(range(np.size(self.w)), np.reshape(self.w, (np.size(self.w))))
+        # self.axs[1].plot(range(np.size(self.dw)), np.reshape(self.dw, (np.size(self.dw))))
+        # self.axs[2].plot(range(np.size(self.delta)), np.reshape(self.delta, (np.size(self.delta))))
+        # self.axs[3].plot(range(np.size(self.delta_1)), np.reshape(self.delta_1, (np.size(self.delta_1))))
+        # self.axs[4].plot(range(np.size(self.x)), np.reshape(self.x, (np.size(self.x))))
+        # self.axs[5].plot(range(np.size(self.y)), np.reshape(self.y, (np.size(self.y))))
         
 
-        self.axs[0].title.set_text('W')
-        self.axs[1].title.set_text('dW')
-        self.axs[2].title.set_text('delta')
-        self.axs[3].title.set_text('delta_1')
-        self.axs[4].title.set_text('x')
-        self.axs[5].title.set_text('y')
+        # self.axs[0].title.set_text('W')
+        # self.axs[1].title.set_text('dW')
+        # self.axs[2].title.set_text('delta')
+        # self.axs[3].title.set_text('delta_1')
+        # self.axs[4].title.set_text('x')
+        # self.axs[5].title.set_text('y')
 
 
 

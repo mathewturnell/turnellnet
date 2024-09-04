@@ -1,9 +1,9 @@
 from fcnetwork import FCNetwork
 from fclayer import FCLayer
 from cnnlayer import CNNLayer
-from dslayer import DownSamplingLayer
+from slayer import Slayer
 from activationlayer import ActivationLayer
-from activation_functions import act_ds, df_act_ds, act_tanh, df_act_tanh
+from activation_functions import act_ds, df_act_ds, act_tanh, df_act_tanh, act_RELU, df_act_RELU
 
 from tensorflow import keras
 from keras._tf_keras.keras.datasets import mnist
@@ -32,13 +32,10 @@ numberOfKernels = 10
 numberOfKernels1 = 10
 numberOfKernels2 = 10
 
-dsKernel0 = 10
-dsKernel1 = 10
-
-kernelSize_x = 3
-kernelSize_y = 3
-kernelSize1_x = 5
-kernelSize1_y = 5
+kernelSize_x = 2
+kernelSize_y = 2
+kernelSize1_x = 3
+kernelSize1_y = 3
 
 kernelSize2_x = 10
 kernelSize2_y = 10
@@ -84,26 +81,26 @@ if(netType == 0):
 else:
 
     cnn0 = CNNLayer(inputSize_x, inputSize_y, inputDepth, kernelSize_x, kernelSize_y, numberOfKernels, trainingRateCNN)
-    ds0 = DownSamplingLayer(cnn0.sizeOutput_x, cnn0.sizeOutput_y, cnn0.kernel_count, dsKernel0, dsKernel0)
+    ds0 = Slayer(cnn0.sizeOutput_x, cnn0.sizeOutput_y, cnn0.kernel_count, 2, 2, trainingRateCNN)
     cnn1 = CNNLayer(ds0.sizeOutput_x, ds0.sizeOutput_y, ds0.kernel_count, kernelSize1_x, kernelSize1_y, numberOfKernels1, trainingRateCNN)
-    ds1 = DownSamplingLayer(cnn1.sizeOutput_x, cnn1.sizeOutput_y, cnn1.kernel_count, dsKernel1, dsKernel1)
+    ds1 = Slayer(cnn1.sizeOutput_x, cnn1.sizeOutput_y, cnn1.kernel_count, 2, 2, trainingRateCNN)
 
     #cnn2 = CNNLayer(cnn1.sizeOutput_x, cnn1.sizeOutput_y, cnn1.kernel_count, kernelSize2_x, kernelSize2_y, numberOfKernels2, trainingRateCNN)
 
     net.add(cnn0)
-    net.add(ActivationLayer(act_tanh, df_act_tanh, 1, "Act_tanh", False))
     net.add(ds0)
-    net.add(ActivationLayer(act_ds, df_act_ds, ds0.kernel_size_x*ds0.kernel_size_y, "DownSampling", False))
-    net.add(cnn1)
     net.add(ActivationLayer(act_tanh, df_act_tanh, 1, "Act_tanh", False))
+    # net.add(ActivationLayer(act_RELU, df_act_RELU, 1, "Act_RELU", False))
+    net.add(cnn1)
     net.add(ds1)
-    net.add(ActivationLayer(act_ds, df_act_ds, ds1.kernel_size_x*ds1.kernel_size_y, "DownSampling", True))
+    net.add(ActivationLayer(act_tanh, df_act_tanh, 1, "Act_tanh", True))
+    # net.add(ActivationLayer(act_RELU, df_act_RELU, 1, "Act_RELU", True))
 
     # net.add(cnn2)
     # net.add(ActivationLayer(act_tanh, df_act_tanh, "Act_tanh", True))
     net.add(FCLayer(ds1.sizeOutput_x * ds1.sizeOutput_y * ds1.kernel_count, 100, trainingRateFC))
+    net.add(ActivationLayer(act_tanh, df_act_tanh, 1, "Act_tanh", 0))
 
-net.add(ActivationLayer(act_tanh, df_act_tanh, 1, "Act_tanh", 0))
 net.add(FCLayer(100, 50, 0.1))
 net.add(ActivationLayer(act_tanh, df_act_tanh, 1, "Act_tanh", 0))
 net.add(FCLayer(50, 10, 0.1)) 

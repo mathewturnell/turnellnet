@@ -7,25 +7,27 @@ import os
 
 from matplotlib import pyplot as plt
 
-class DownSamplingLayer(CNNLayer):
+class SamplingLayer(CNNLayer):
 
-    def __init__(self, input_size_x, input_size_y,  input_depth, kernel_size_x, kernel_size_y):
+    def __init__(self, input_size_x, input_size_y,  input_depth, samplingFactor):
 
         diag = 0
 
-        self.type = "DownSampling"
+        self.type = "Sampling"
 
         self.input_depth = input_depth
         self.kernel_count = input_depth
 
-        self.kernel_size_x = kernel_size_x
-        self.kernel_size_y = kernel_size_y
+        self.kernel_size_x = 1
+        self.kernel_size_y = 1
 
         self.input_size_x = input_size_x
         self.input_size_y = input_size_y
 
-        self.sizeOutput_x = input_size_x - self.kernel_size_x + 1
-        self.sizeOutput_y = input_size_y - self.kernel_size_y + 1
+        self.samplingFactor = samplingFactor
+
+        self.sizeOutput_x = input_size_x/self.samplingFactor
+        self.sizeOutput_y = input_size_y/self.samplingFactor
 
         self.x = np.zeros((input_size_x, input_size_y, self.input_depth))
 
@@ -39,7 +41,7 @@ class DownSamplingLayer(CNNLayer):
 
         if diag == 1:
             self.fig, self.axs = plt.subplots(1,6)
-            self.fig.suptitle('Layer CNN: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
+            self.fig.suptitle('Layer Sampling: Input %dx%d Output %dx%d\nInput depth D=%d, Output kernels K=%d '%(self.input_size_x, self.input_size_y, self.sizeOutput_x, self.sizeOutput_y,  self.input_depth, self.kernel_count), fontsize=16)
 
         self.numberLinesOutput = self.input_depth * self.kernel_count
         if self.numberLinesOutput > 10:
