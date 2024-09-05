@@ -1,4 +1,6 @@
-import numpy as np
+# import numpy as np
+import cupy as np
+
 from layer import Layer
 
 from matplotlib import pyplot as plt

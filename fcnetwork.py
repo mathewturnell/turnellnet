@@ -1,4 +1,6 @@
-import numpy as np
+# import numpy as np
+import cupy as np
+
 import matplotlib.pyplot as plt
 import error as er
 
@@ -114,7 +116,7 @@ class FCNetwork:
         print(a)
         print('\n')
 
-        print('Training NeuralNet, %d layers'%(np.size(self.layers)))
+        # print('Training NeuralNet, %d layers'%(np.size(self.layers)))
         print(self.printStructure())
         
         percentage = (iteration*trainingSamples+sample)*100/(trainingSamples*iterations)

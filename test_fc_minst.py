@@ -1,16 +1,18 @@
+# import numpy as np
+import cupy as np
+
+from tensorflow import keras
+from keras._tf_keras.keras.datasets import mnist
+from keras._tf_keras.keras import utils as np_utils
+
+from matplotlib import pyplot as plt
+
 from fcnetwork import FCNetwork
 from fclayer import FCLayer
 from cnnlayer import CNNLayer
 from slayer import Slayer
 from activationlayer import ActivationLayer
 from activation_functions import act_ds, df_act_ds, act_tanh, df_act_tanh, act_RELU, df_act_RELU
-
-from tensorflow import keras
-from keras._tf_keras.keras.datasets import mnist
-from keras._tf_keras.keras import utils as np_utils
-
-import numpy as np
-from matplotlib import pyplot as plt
 
 ################################################################################################################
 
@@ -29,18 +31,18 @@ inputSize_y = 28
 #hyper parameters CNN
 
 numberOfKernels = 10
-numberOfKernels1 = 10
+numberOfKernels1 = 20
 numberOfKernels2 = 10
 
 kernelSize_x = 2
 kernelSize_y = 2
-kernelSize1_x = 3
-kernelSize1_y = 3
+kernelSize1_x = 7
+kernelSize1_y = 7
 
 kernelSize2_x = 10
 kernelSize2_y = 10
 
-trainingSamples = 2000
+trainingSamples = 1000
 trainingIterations = 2
 
 trainingRateCNN = 0.1
@@ -50,6 +52,11 @@ trainingRateFC = 0.1
 # load MNIST from server
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
+x_train = np.asarray(x_train)
+y_train = np.asarray(y_train)
+x_test = np.asarray(x_test)
+y_test = np.asarray(y_test)
+
 # reshape and normalize input data
 if(netType == 0):
     x_train = x_train.reshape(x_train.shape[0], 1, 28*28)
@@ -58,7 +65,7 @@ else:
 
 x_train = x_train.astype('float32')
 x_train /= 255
-y_train = np_utils.to_categorical(y_train)
+y_train = np.asarray(np_utils.to_categorical(np.asnumpy(y_train)))
 
 
 if(netType == 0):
@@ -68,7 +75,7 @@ else:
 
 x_test = x_test.astype('float32')
 x_test /= 255
-y_test = np_utils.to_categorical(y_test)
+y_test = np.asarray(np_utils.to_categorical(np.asnumpy(y_test)))
 
 ################################################################################################################
 

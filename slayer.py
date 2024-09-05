@@ -1,7 +1,8 @@
-import numpy as np
+# import numpy as np
+import cupy as np
+
 from layer import Layer
 from cnnlayer import CNNLayer
-import scipy as sp
 import os
 
 from matplotlib import pyplot as plt
@@ -140,7 +141,7 @@ class Slayer(CNNLayer):
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
 
-                if d+k == 10:
+                if d+k >= 10:
                     break
 
                 if (d == k):

@@ -1,4 +1,5 @@
-import numpy as np
+# import numpy as np
+import cupy as np
 
 def act_ds(x, N):
 

@@ -1,6 +1,11 @@
-import numpy as np
+# import numpy as np
+import cupy as np
+import cupyx.scipy.signal as sp
+# import cupy as sp
+
+
 from layer import Layer
-import scipy as sp
+# import scipy as sp
 import os
 
 from matplotlib import pyplot as plt
@@ -64,7 +69,7 @@ class CNNLayer(Layer):
         for k in range(self.kernel_count):
             self.a[:,:,k] = self.b[:,:,k]
             for d in range(self.input_depth):
-                self.a[:, :, k] += sp.signal.correlate2d(self.x_plus[:,:,d], self.w[:,:,d,k], mode='valid')
+                self.a[:, :, k] += sp.correlate2d(self.x_plus[:,:,d], self.w[:,:,d,k], mode='valid')
 
         self.y = self.a
 
@@ -83,11 +88,11 @@ class CNNLayer(Layer):
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
 
-                self.delta_1[:, :, d] += sp.signal.convolve2d(np.squeeze(self.delta[:,:,k]), np.squeeze(self.w[:,:,d,k]), mode='valid')
+                self.delta_1[:, :, d] += sp.convolve2d(np.squeeze(self.delta[:,:,k]), np.squeeze(self.w[:,:,d,k]), mode='valid')
 
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
-                self.dw[:, :, d, k] = sp.signal.correlate2d(np.squeeze(self.x_plus[:,:,d]), np.squeeze(self.delta[:,:,k]), mode='valid')
+                self.dw[:, :, d, k] = sp.correlate2d(np.squeeze(self.x_plus[:,:,d]), np.squeeze(self.delta[:,:,k]), mode='valid')
                 
         self.db = self.delta
 
