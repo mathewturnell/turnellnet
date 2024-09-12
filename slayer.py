@@ -137,30 +137,31 @@ class Slayer(CNNLayer):
     
     def printState(self):
 
+        pass
 
-        for d in range(self.input_depth):
-            for k in range(self.kernel_count):
+        # for d in range(self.input_depth):
+        #     for k in range(self.kernel_count):
 
-                if d+k >= 10:
-                    break
+        #         if d+k >= 10:
+        #             break
 
-                if (d == k):
+        #         if (d == k):
 
-                    self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
-                    self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
-                    self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
-                    self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
-                    self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
-                    self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
+        #             self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
+        #             self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
+        #             self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
+        #             self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
+        #             self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
+        #             self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
 
-                    self.axs1[d+k,0].imshow(np.squeeze(self.x[:,:,d]), interpolation='nearest')
-                    self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
+        #             self.axs1[d+k,0].imshow(np.squeeze(self.x[:,:,d]), interpolation='nearest')
+        #             self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
 
-                    self.axs1[d+k,0].title.set_text('x[d=%d]'%(d))
-                    self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
+        #             self.axs1[d+k,0].title.set_text('x[d=%d]'%(d))
+        #             self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
         
 
-        # self.axs[0].legend()
+        # # self.axs[0].legend()
 
 
 

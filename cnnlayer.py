@@ -138,29 +138,29 @@ class CNNLayer(Layer):
         k = 0
 
 
-        for d in range(self.input_depth):
+        # for d in range(self.input_depth):
 
-            if d+k == 10:
-                break
+        #     if d+k == 10:
+        #         break
 
-            self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
-            self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
-            self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
-            self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
-            self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
-            self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
+        #     self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
+        #     self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
+        #     self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
+        #     self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
+        #     self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
+        #     self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
 
-            self.axs1[d+k,0].imshow(np.squeeze(self.x_plus[:,:,d]), interpolation='nearest')
-            self.axs1[d+k,1].imshow(np.squeeze(self.w[:, :, d, k]), interpolation='nearest')
-            self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
+        #     self.axs1[d+k,0].imshow(np.squeeze(self.x_plus[:,:,d]), interpolation='nearest')
+        #     self.axs1[d+k,1].imshow(np.squeeze(self.w[:, :, d, k]), interpolation='nearest')
+        #     self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
 
-            self.axs1[d+k,0].title.set_text('x_plus[d=%d]'%(d))
-            self.axs1[d+k,1].title.set_text('W[d=%d,k=%d]'%(d,k))
-            self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
+        #     self.axs1[d+k,0].title.set_text('x_plus[d=%d]'%(d))
+        #     self.axs1[d+k,1].title.set_text('W[d=%d,k=%d]'%(d,k))
+        #     self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
 
-            k = k + 1
-            if k >= self.kernel_count:
-                k = 0
+        #     k = k + 1
+        #     if k >= self.kernel_count:
+        #         k = 0
         
 
         # self.axs[0].legend()

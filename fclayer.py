@@ -3,7 +3,9 @@ import cupy as np
 
 from layer import Layer
 
+from datetime import datetime
 from matplotlib import pyplot as plt
+
 
 class FCLayer(Layer):
 
