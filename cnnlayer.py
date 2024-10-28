@@ -1,11 +1,6 @@
-# import numpy as np
-import cupy as np
-import cupyx.scipy.signal as sp
-# import cupy as sp
-
-
+import numpy as np
 from layer import Layer
-# import scipy as sp
+import scipy as sp
 import os
 
 from matplotlib import pyplot as plt
@@ -69,7 +64,7 @@ class CNNLayer(Layer):
         for k in range(self.kernel_count):
             self.a[:,:,k] = self.b[:,:,k]
             for d in range(self.input_depth):
-                self.a[:, :, k] += sp.correlate2d(self.x_plus[:,:,d], self.w[:,:,d,k], mode='valid')
+                self.a[:, :, k] += sp.signal.correlate2d(self.x_plus[:,:,d], self.w[:,:,d,k], mode='valid')
 
         self.y = self.a
 
@@ -88,11 +83,11 @@ class CNNLayer(Layer):
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
 
-                self.delta_1[:, :, d] += sp.convolve2d(np.squeeze(self.delta[:,:,k]), np.squeeze(self.w[:,:,d,k]), mode='valid')
+                self.delta_1[:, :, d] += sp.signal.convolve2d(np.squeeze(self.delta[:,:,k]), np.squeeze(self.w[:,:,d,k]), mode='valid')
 
         for d in range(self.input_depth):
             for k in range(self.kernel_count):
-                self.dw[:, :, d, k] = sp.correlate2d(np.squeeze(self.x_plus[:,:,d]), np.squeeze(self.delta[:,:,k]), mode='valid')
+                self.dw[:, :, d, k] = sp.signal.correlate2d(np.squeeze(self.x_plus[:,:,d]), np.squeeze(self.delta[:,:,k]), mode='valid')
                 
         self.db = self.delta
 
@@ -138,29 +133,29 @@ class CNNLayer(Layer):
         k = 0
 
 
-        # for d in range(self.input_depth):
+        for d in range(self.input_depth):
 
-        #     if d+k == 10:
-        #         break
+            if d+k == 10:
+                break
 
-        #     self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
-        #     self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
-        #     self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
-        #     self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
-        #     self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
-        #     self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
+            self.axs1[d+k,0].xaxis.set_tick_params(labelbottom=False)
+            self.axs1[d+k,1].xaxis.set_tick_params(labelleft=False)
+            self.axs1[d+k,2].xaxis.set_tick_params(labelleft=False)
+            self.axs1[d+k,0].yaxis.set_tick_params(labelbottom=False)
+            self.axs1[d+k,1].yaxis.set_tick_params(labelleft=False)
+            self.axs1[d+k,2].yaxis.set_tick_params(labelleft=False)
 
-        #     self.axs1[d+k,0].imshow(np.squeeze(self.x_plus[:,:,d]), interpolation='nearest')
-        #     self.axs1[d+k,1].imshow(np.squeeze(self.w[:, :, d, k]), interpolation='nearest')
-        #     self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
+            self.axs1[d+k,0].imshow(np.squeeze(self.x_plus[:,:,d]), interpolation='nearest')
+            self.axs1[d+k,1].imshow(np.squeeze(self.w[:, :, d, k]), interpolation='nearest')
+            self.axs1[d+k,2].imshow(np.squeeze(self.y[:,:,k]), interpolation='nearest')
 
-        #     self.axs1[d+k,0].title.set_text('x_plus[d=%d]'%(d))
-        #     self.axs1[d+k,1].title.set_text('W[d=%d,k=%d]'%(d,k))
-        #     self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
+            self.axs1[d+k,0].title.set_text('x_plus[d=%d]'%(d))
+            self.axs1[d+k,1].title.set_text('W[d=%d,k=%d]'%(d,k))
+            self.axs1[d+k,2].title.set_text('y[k=%d]'%(k))
 
-        #     k = k + 1
-        #     if k >= self.kernel_count:
-        #         k = 0
+            k = k + 1
+            if k >= self.kernel_count:
+                k = 0
         
 
         # self.axs[0].legend()

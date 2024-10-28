@@ -1,11 +1,7 @@
-# import numpy as np
-import cupy as np
-
+import numpy as np
 from layer import Layer
 
-from datetime import datetime
 from matplotlib import pyplot as plt
-
 
 class FCLayer(Layer):
 

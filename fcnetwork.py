@@ -1,9 +1,5 @@
-# import numpy as np
-import cupy as np
-
-from datetime import datetime
+import numpy as np
 import matplotlib.pyplot as plt
-
 import error as er
 
 import os
@@ -16,8 +12,8 @@ class FCNetwork:
         self.input_layer = None
         self.expected_output = None
 
-        # self.predictions = np.empty()
-        # self.J = np.empty()
+        self.predictions = []
+        self.J = []
 
     def add(self, layer):
 
@@ -63,8 +59,6 @@ class FCNetwork:
 
             result.append(output.copy())
 
-
-
         return result
 
     def train(self, inputs_train, outputs_train, iterations, trainingSamples, diag):
@@ -76,46 +70,23 @@ class FCNetwork:
                 output = inputs_train[i].copy()
 
                 for layer in self.layers:
-
-                    start = datetime.now()
-
                     output = layer.forward_propagation(output,diag)
-
-                    now = datetime.now()
-                    print(now - start)
-                    pass
-
                     
                     # index = layer.printState()
                     # if index == 1:
                     #     print('Real Value: %d, Predicted Value: %d'%(np.argmax(outputs_train[i+1]), np.argmax(output)))
                         
 
-
-
                 error = er.error(outputs_train[i], output)
                 d_error = er.d_error(error)
 
                 delta_1 = d_error
-
-
-
                 for layer in reversed(self.layers):
-                    start = datetime.now()
                     delta_1 = layer.backward_propagation(delta_1, diag)
-                    now = datetime.now()
-                    print(now - start)
-                    pass
-
-               
 
                 J_mse = er.J(error)
 
                 self.printStateLearning(output, J_mse, k, i, np.argmax(outputs_train[i]) ,iterations, trainingSamples)
-
-                now = datetime.now()
-                print(now - start)
-
 
                 #print('prediction %f, output %d' % (output, outputs_train[i]))
                 # os.system('cls' if os.name == 'nt' else 'clear')
@@ -125,8 +96,8 @@ class FCNetwork:
                 # print(outputs_train[i])
 
 
-                # self.predictions.append(output)
-                # self.J.append(J_mse)
+                self.predictions.append(output)
+                self.J.append(J_mse)
         
     def printStateLearning(self, output, error, iteration, sample, sampleTrueValue, iterations, trainingSamples):
 
@@ -143,7 +114,7 @@ class FCNetwork:
         print(a)
         print('\n')
 
-        # print('Training NeuralNet, %d layers'%(np.size(self.layers)))
+        print('Training NeuralNet, %d layers'%(np.size(self.layers)))
         print(self.printStructure())
         
         percentage = (iteration*trainingSamples+sample)*100/(trainingSamples*iterations)
