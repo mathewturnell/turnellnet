@@ -11,6 +11,6 @@ The only libraries used for this implementation are numpy and matplotlib.
 Copy of MNIST datasets are provided in the datasets folder.
 A Conda environment provided in conda.yml for convenience.
 
-![readme](https://github.com/user-attachments/assets/e8d88a96-96d6-4e8e-9cdc-e7c69e90a05e)
+![Alt text](readme.png)
 
 I will be posting all the equations used to derive the code here in this repo soon.
