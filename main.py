@@ -6,7 +6,7 @@
 #Choice of NN: 0 = Fully Connected / 1 = Convolutional
 netType = 1
 #Choice of Dataset: 0 = MNIST digits / 1 = MNISTE letters
-option = 1
+option = 0
 
 import sys
 
